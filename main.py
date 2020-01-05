@@ -1,10 +1,8 @@
 import Action
-Name = "You"
-Decision = ""
-yes_List = ['YES', 'yes', 'Y', 'Yes', 'y']
-no_List = ['NO', 'no', 'No', 'N', 'n']
-Intro = True
-
+Name = "You" # string varible for the name
+Decision = "" # varible for writing decisions
+yes_List = ['YES', 'yes', 'Y', 'Yes', 'y'] # list of inputs for yes
+no_List = ['NO', 'no', 'No', 'N', 'n'] # list of inputs for no
 
 def introChoice():
     global Decision
@@ -83,10 +81,10 @@ while Action.Game:
     else:
         continue
 print(Name, ":........", Name)
-print("Capt.Rock Rock:Hear that everybody meet our new recruit", Name, "!")
+print("Capt.Rock: Hear that everybody meet our new recruit", Name, "!")
 print("Everyone: HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA")
 print("Everyone:", Name * 6)
-print("Capt.Rock Rock:Alright shut up this isn't playtime back to positions!")
+print("Capt.Rock: Alright shut up this isn't playtime back to positions!")
 print("Capt.Rock:", Name, "come with me!")
 print(Name, ":o-okay sir")
 print("Capt.Rock: You've been here for a while now and I'm glad to say your training is done")
@@ -96,17 +94,16 @@ print("Capt.Rock: You can choose only one. Just like your name type the number o
 classChoice()
 print("Capt.Rock: So you choose", Class, "very well.")
 print("Capt.Rock: Now onto weapons and fighting enemi-")
-print("KABOOOM!!!!")
+print("(KABOOOM!!!!)")
 print("Random Soldier: EXPLOSION AT THE SOUTH SIDE!")
 print("Capt.Rock: Damn they found us! ", Name, " grab a weapon bag and start shooting!")
-print("Type 'Equip or e' to equip a weapon and choose one ")
-print("Type 'Shoot or s' to use it!")
-print("Type 'Help or h' if forget the commands you can type")
+print("TYPE 'Equip or e' TO EQUIP A WEAPON.")
+print("TYPE 'Shoot or s' TO FIRE YOUR WEAPON")
+print("TYPE 'Help or h' IF YOU FORGET THE COMMANDS YOU CAN TYPE")
 Action.introCombat()
 print("Capt.Rock: WAIT STOP!")
 print("Capt.Rock: NO ENEMIES IN SIGHT! WHAT'S GOING ON HERE!")
 print("Random Soldier: Sir! It seems to be a explosives malfunction false alarm!")
-print("Capt.Rock: Damn we're not even in battle yet and already wasting ammo")
 print("Capt.Rock: Hey",Name,"what was I talking about earlier?")
 print(Name,": Sir! You were talking about wep-")
 print("Capt.Rock: Ah yes weapons and battling! Well you just did some of that just now.")
@@ -120,3 +117,13 @@ print("Capt.Rock: 'Cover' will decrease your chance of getting shot but the enem
 print("Capt.Rock: Type 'Cover or c' to get behind cover")
 print("Capt.Rock: All the actions will be shown whenever you type 'Help or h'")
 print("Capt.Rock: Now onto the mission briefing. EVERYONE GATHER UP!")
+print("Capt.Rock: Our mission is to secure the area around outpost D and currently we're at outpost A.")
+print("Capt.Rock: However we'll stick out like a sore thumb all together like so we'll split up.")
+print("Capt.Rock: Two teams, Team Alpha and Team Bravo the team each of you are on is on the board other there")
+print("Capt.Rock: Once you know your team get some rest and we move out at 0600. ")
+print("Capt.Rock: If we dont secure the outpost in 7 days it's a mission failure. Everyone clear?")
+print("Everyone: SIR YES SIR")
+print(Name,"is on Team Bravo")
+print("THE NIGHT PASSES GET READY FOR BATTLE!")
+# Introduction end
+
