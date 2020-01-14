@@ -3,6 +3,8 @@ Name = "You" # string varible for the name
 Decision = "" # varible for writing decisions
 yes_List = ['YES', 'yes', 'Y', 'Yes', 'y'] # list of inputs for yes
 no_List = ['NO', 'no', 'No', 'N', 'n'] # list of inputs for no
+enemyName = ""
+enemyNameList = ["1.Russians", "2.North Koreans", "3.Arabs", "4.Zombie Alien Uber-Nazis", "5.Vegans"]
 
 def introChoice():
     global Decision
@@ -104,6 +106,8 @@ Action.introCombat()
 print("Capt.Rock: WAIT STOP!")
 print("Capt.Rock: NO ENEMIES IN SIGHT! WHAT'S GOING ON HERE!")
 print("Random Soldier: Sir! It seems to be a explosives malfunction false alarm!")
+print("Capt.Rock: Dammit not even in battle we're already wasting ammo")
+print("Capt.Rock: EVERYONE BACK TO POSTIONS!")
 print("Capt.Rock: Hey",Name,"what was I talking about earlier?")
 print(Name,": Sir! You were talking about wep-")
 print("Capt.Rock: Ah yes weapons and battling! Well you just did some of that just now.")
@@ -117,6 +121,38 @@ print("Capt.Rock: 'Cover' will decrease your chance of getting shot but the enem
 print("Capt.Rock: Type 'Cover or c' to get behind cover")
 print("Capt.Rock: All the actions will be shown whenever you type 'Help or h'")
 print("Capt.Rock: Now onto the mission briefing. EVERYONE GATHER UP!")
+print("Capt.Rock: This it men we're finally going to fight the-, the-, ......")
+print("Capt.Rock: ............")
+print(Name,": Sir, did you forget who our enemy i-")
+print("Capt Rock: ABSOLUTELY NOT! Seeing as your such a smartass how about you tell everyone enemy is")
+print("Capt.Rock: Just in case anyone forgot, not including me")
+while Action.Game:
+    print(Name,": S-Sir our enemy is the: ")
+    print(enemyNameList)
+    print("Type a number")
+    try:
+        enemyNameChange = int(input(""))
+    except ValueError:
+        continue
+    if enemyNameChange == 1:
+        enemyName = "Russians"
+        break
+    elif enemyNameChange == 2:
+        enemyName = "North Koreans"
+        break
+    elif enemyNameChange == 3:
+        enemyName = "Arabs"
+        break
+    elif enemyNameChange == 4:
+        enemyName = "Zombie Alien Uber-Nazis"
+        break
+    elif enemyNameChange == 5:
+        enemyName = "Vegans"
+        break
+    else:
+        continue
+print(Name,": It's the ",enemyName[0:-2],"-")
+print("Capt.Rock: YES! The ",enemyName," damn those bastards!")
 print("Capt.Rock: Our mission is to secure the area around outpost D and currently we're at outpost A.")
 print("Capt.Rock: However we'll stick out like a sore thumb all together like so we'll split up.")
 print("Capt.Rock: Two teams, Team Alpha and Team Bravo the team each of you are on is on the board other there")
