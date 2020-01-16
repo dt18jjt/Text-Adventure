@@ -1,9 +1,9 @@
 import Action
+import random
 Name = "You" # string varible for the name
 Decision = "" # varible for writing decisions
 yes_List = ['YES', 'yes', 'Y', 'Yes', 'y'] # list of inputs for yes
 no_List = ['NO', 'no', 'No', 'N', 'n'] # list of inputs for no
-enemyName = ""
 enemyNameList = ["1.Russians", "2.North Koreans", "3.Arabs", "4.Zombie Alien Uber-Nazis", "5.Vegans"]
 
 def introChoice():
@@ -35,25 +35,26 @@ def classChoice():
         except ValueError:
             continue
         if classChange == 1:
-            print("Gunner specializes in firearms but bad with explosives 'INCREASED DAMAGE'")
+            print("Gunner specializes in firearms so they carry more rounds 'FIREPOWER'")
             Class = "Gunner"
             introChoice()
             break
         elif classChange == 2:
-            print("Ranger specializes in sniping but less health'INCREASED ACCURACY")
+            print("Ranger specializes in sniping so they have better aim 'ACCURACY'")
             Class = "Ranger"
             introChoice()
             break
         elif classChange == 3:
-            print("Medic can heal themselves at any time but do little damage 'INCREASED HEALTH")
+            print("Medic can heal soldiers completely and the first try 'HEALING")
             Class = "Medic"
             introChoice()
             break
         elif classChange == 4:
-            print("Demolition can carry more bombs but has bad aim 'INCREASED EXPLOSIVES")
-            Class = "Demolition"
-            introChoice()
-            break
+            pass
+            #print("Demolition can carry more bombs but has bad aim 'INCREASED EXPLOSIVES")
+            #Class = "Demolition"
+            #introChoice()
+            #break
         else:
             continue
 
@@ -115,10 +116,12 @@ print("Capt.Rock: BUT! Battling isn't just about spraying and praying")
 print("Capt.Rock: 'Accuracy' needs to be taken into account ")
 print("Capt.Rock: Your Class, Weapon and distance from enemy affects 'Accuracy'")
 print("Capt.Rock: Type 'Aim' or a' to see your chance of hitting a enemy")
-print("Capt.Rock: 'Healing' can Heal you or a teammate. If you're not a medic you have to ask for healing from a medic")
-print("Capt.Rock: Type 'Medkit or m' to heal or ask for healing")
+print("Capt.Rock: 'Medkit' can Heal a wounded teammate but there's a chance of failing unless it's a medic ")
+print("Capt.Rock: Type 'Medkit or m' to heal a teamate")
 print("Capt.Rock: 'Cover' will decrease your chance of getting shot but the enemy will push forward")
 print("Capt.Rock: Type 'Cover or c' to get behind cover")
+print("Capt.Rock: 'Go' will change the teams location to be closer or further from the enemy")
+print("Capt.Rock: Type 'Go or g' to move location")
 print("Capt.Rock: All the actions will be shown whenever you type 'Help or h'")
 print("Capt.Rock: Now onto the mission briefing. EVERYONE GATHER UP!")
 print("Capt.Rock: This it men we're finally going to fight the-, the-, ......")
@@ -135,24 +138,24 @@ while Action.Game:
     except ValueError:
         continue
     if enemyNameChange == 1:
-        enemyName = "Russians"
+        Action.enemyName = "Russians"
         break
     elif enemyNameChange == 2:
-        enemyName = "North Koreans"
+        Action.enemyName = "North Koreans"
         break
     elif enemyNameChange == 3:
-        enemyName = "Arabs"
+        Action.enemyName = "Arabs"
         break
     elif enemyNameChange == 4:
-        enemyName = "Zombie Alien Uber-Nazis"
+        Action.enemyName = "Zombie Alien Uber-Nazis"
         break
     elif enemyNameChange == 5:
-        enemyName = "Vegans"
+        Action.enemyName = "Vegans"
         break
     else:
         continue
-print(Name,": It's the ",enemyName[0:-2],"-")
-print("Capt.Rock: YES! The ",enemyName," damn those bastards!")
+print(Name,": It's the ",Action.enemyName[0:-2],"-")
+print("Capt.Rock: YES! The ",Action.enemyName," damn those bastards!")
 print("Capt.Rock: Our mission is to secure the area around outpost D and currently we're at outpost A.")
 print("Capt.Rock: However we'll stick out like a sore thumb all together like so we'll split up.")
 print("Capt.Rock: Two teams, Team Alpha and Team Bravo the team each of you are on is on the board other there")
@@ -162,4 +165,6 @@ print("Everyone: SIR YES SIR")
 print(Name,"is on Team Bravo")
 print("THE NIGHT PASSES GET READY FOR BATTLE!")
 # Introduction end
+Action.playerTurn()
+
 
