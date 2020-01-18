@@ -1,10 +1,12 @@
 import Action
 import random
-Name = "You" # string varible for the name
-Decision = "" # varible for writing decisions
-yes_List = ['YES', 'yes', 'Y', 'Yes', 'y'] # list of inputs for yes
-no_List = ['NO', 'no', 'No', 'N', 'n'] # list of inputs for no
+
+Name = "You"  # string varible for the name
+Decision = ""  # varible for writing decisions
+yes_List = ['YES', 'yes', 'Y', 'Yes', 'y']  # list of inputs for yes
+no_List = ['NO', 'no', 'No', 'N', 'n']  # list of inputs for no
 enemyNameList = ["1.Russians", "2.North Koreans", "3.Arabs", "4.Zombie Alien Uber-Nazis", "5.Vegans"]
+
 
 def introChoice():
     global Decision
@@ -49,17 +51,14 @@ def classChoice():
             Class = "Medic"
             introChoice()
             break
-        elif classChange == 4:
-            pass
-            #print("Demolition can carry more bombs but has bad aim 'INCREASED EXPLOSIVES")
-            #Class = "Demolition"
-            #introChoice()
-            #break
         else:
             continue
 
+
+
+Action.playerTurn()
 # Intro Sequence
-print("Capt.Rock:WAKE UP SOLDIER!YOU THINK YOU CAN SLEEP WHILE ON DUTY!")
+print("Capt.Rock:WAKE UP SOLDIER! YOU THINK YOU CAN SLEEP WHILE ON DUTY!")
 print(Name, ": No sir! Sor-")
 print("Capt.Rock: Save your apologies if you're still alive after this!")
 print("Capt.Rock: What is your name?")
@@ -92,9 +91,12 @@ print("Capt.Rock:", Name, "come with me!")
 print(Name, ":o-okay sir")
 print("Capt.Rock: You've been here for a while now and I'm glad to say your training is done")
 print("Capt.Rock: DON'T CELEBRATE NOW! This is only the start, Each solider has their own class")
-print("Capt.Rock: A class is a area of expertise and you only have choice of 4")
+print("Capt.Rock: A class is a area of expertise and you only have choice of 3")
 print("Capt.Rock: You can choose only one. Just like your name type the number of the class you want")
 classChoice()
+if Class == "Gunner":
+    for i in Action.ammoDict:
+        Action.ammoDict[i] *= 2
 print("Capt.Rock: So you choose", Class, "very well.")
 print("Capt.Rock: Now onto weapons and fighting enemi-")
 print("(KABOOOM!!!!)")
@@ -107,10 +109,10 @@ Action.introCombat()
 print("Capt.Rock: WAIT STOP!")
 print("Capt.Rock: NO ENEMIES IN SIGHT! WHAT'S GOING ON HERE!")
 print("Random Soldier: Sir! It seems to be a explosives malfunction false alarm!")
-print("Capt.Rock: Dammit not even in battle we're already wasting ammo")
+# print("Capt.Rock: Dammit not even in battle we're already wasting ammo")
 print("Capt.Rock: EVERYONE BACK TO POSTIONS!")
-print("Capt.Rock: Hey",Name,"what was I talking about earlier?")
-print(Name,": Sir! You were talking about wep-")
+print("Capt.Rock: Hey", Name, "what was I talking about earlier?")
+print(Name, ": Sir! You were talking about wep-")
 print("Capt.Rock: Ah yes weapons and battling! Well you just did some of that just now.")
 print("Capt.Rock: BUT! Battling isn't just about spraying and praying")
 print("Capt.Rock: 'Accuracy' needs to be taken into account ")
@@ -126,11 +128,11 @@ print("Capt.Rock: All the actions will be shown whenever you type 'Help or h'")
 print("Capt.Rock: Now onto the mission briefing. EVERYONE GATHER UP!")
 print("Capt.Rock: This it men we're finally going to fight the-, the-, ......")
 print("Capt.Rock: ............")
-print(Name,": Sir, did you forget who our enemy i-")
+print(Name, ": Sir, did you forget who our enemy i-")
 print("Capt Rock: ABSOLUTELY NOT! Seeing as your such a smartass how about you tell everyone enemy is")
 print("Capt.Rock: Just in case anyone forgot, not including me")
 while Action.Game:
-    print(Name,": S-Sir our enemy is the: ")
+    print(Name, ": S-Sir our enemy is the: ")
     print(enemyNameList)
     print("Type a number")
     try:
@@ -154,17 +156,15 @@ while Action.Game:
         break
     else:
         continue
-print(Name,": It's the ",Action.enemyName[0:-2],"-")
-print("Capt.Rock: YES! The ",Action.enemyName," damn those bastards!")
+print(Name, ": It's the ", Action.enemyName[0:-2], "-")
+print("Capt.Rock: YES! The ", Action.enemyName, " damn those bastards!")
 print("Capt.Rock: Our mission is to secure the area around outpost D and currently we're at outpost A.")
 print("Capt.Rock: However we'll stick out like a sore thumb all together like so we'll split up.")
 print("Capt.Rock: Two teams, Team Alpha and Team Bravo the team each of you are on is on the board other there")
 print("Capt.Rock: Once you know your team get some rest and we move out at 0600. ")
 print("Capt.Rock: If we dont secure the outpost in 7 days it's a mission failure. Everyone clear?")
 print("Everyone: SIR YES SIR")
-print(Name,"is on Team Bravo")
+print(Name, "is on Team Bravo")
 print("THE NIGHT PASSES GET READY FOR BATTLE!")
 # Introduction end
 Action.playerTurn()
-
-
