@@ -1,5 +1,6 @@
 import random
 Game = True
+battlePass = False
 combatAction = ""
 baseAction = ""
 Class = ""
@@ -7,20 +8,20 @@ classChange = ""
 Weapon = 0
 enemyName = ""  # string varible for title of the enemies
 Accuracy = 0
-EnemyDistance = 1
+enemyDistance = 1
 turnCounter = 0
 Troops = 20
-EnemyTroops = 0
+enemyTroops = 0
 shoot_List = ['Shoot', 'shoot', 'shot', 'fire', 'SHOOT', 'S', 's']
 equip_List = ['Equip', 'equip', 'EQUIP', 'E', 'e']
 aim_List = ['Aim', 'aim', 'AIM', 'A', 'a']
-cover_List = ['Cover', 'cover', 'COVER', 'C', 'c']
+check_List = ['Check', 'check', 'CHECK', 'C', 'c']
 heal_List = ['Heal', 'heal', 'HEAL', 'H', 'h']
 go_List = ['Go', 'go', 'GO', 'G', 'g']
-help_List = ['Help', 'help', 'HELP', 'H', 'h']
+help_List = ['Help', 'help', 'HELP', '?']
 reload_List = ['Reload', 'reload', 'RELOAD', 'R', 'r']
-introAction_List = ['Shoot(s)', 'Equip(e)', 'Help(h)']
-combatAction_List = ['Shoot(s)', 'Equip(e)', 'Aim(a)', 'Cover(c)', 'Heal(h)', 'Go(g)', 'Reload(r)', 'Help(?)']
+introAction_List = ['Shoot(s)', 'Equip(e)', 'Help(?)']
+combatAction_List = ['Shoot(s)', 'Equip(e)', 'Aim(a)', 'Check(c)', 'Heal(h)', 'Go(g)', 'Reload(r)', 'Help(?)']
 WepEquip_List = ['1.Machine Gun', '2.Shotgun', '3.Pistol', '4.Sniper Rifle']
 weapon_List = ['Machine Gun', 'Shotgun', 'Pistol', 'Sniper Rifle']
 class_List = ['1.Gunner', '2.Ranger', '3.Medic']
@@ -28,7 +29,8 @@ distance_List = ['Close', 'Mid-range', 'Far']
 accuracy_List = ['0%', '25%', '50%', '75%', '100%']
 ammo_Dict = {'MachineGun': 6, 'Shotgun': 2, 'Pistol': 4, 'SniperRifle': 1}
 troops_Dict = {'TroopsWounded': 0, 'TroopsDead': 0}
-enemy_Dict = {'EnemyWounded': 0, 'EnemyKilled':0}
+enemy_Dict = {'EnemyWounded': 0, 'EnemyKilled': 0}
+
 
 def introCombat():
     global combatAction
@@ -45,8 +47,8 @@ def introCombat():
             turnCounter += 1
             continue
         elif combatAction in shoot_List:
-            if 0 < Weapon > 5:
-                print("You fire your", weapon_List[Weapon])
+            if Weapon > 0:
+                print("You fire your", weapon_List[Weapon - 1])
                 print("Missed")
                 turnCounter += 1
                 continue
@@ -65,12 +67,25 @@ def introCombat():
 
 def playerTurn():
     global combatAction
-    global troops_Dict
-    global EnemyTroops
+    global enemyTroops
+    global Troops
     global enemyName
-    EnemyTroops = random.randrange(10,15,1)
+    enemyTroops = random.randrange(1,5,1)
+    troops_Dict['TroopsWounded'] = 0
+    troops_Dict['TroopsDead'] = 0
     print("Team Bravo has encountered the ",enemyName)
-    while Troops > 0 or EnemyTroops > 0:
+    while Troops > 0 or enemyTroops > 0:
+        if Troops > 30:
+            Troops = 30
+        if Troops <= 0 :
+            print("All Soldiers are dead, Mission Failure")
+            break
+        elif enemyTroops == 0:
+            battlePass = True
+            Troops += troops_Dict['TroopsWounded']
+            print(enemyName," Neutralized")
+            print("All wounded troops are healed")
+            break
         accuracyPercentChange()
         print("What will you do?")
         print(combatAction_List)
@@ -80,6 +95,7 @@ def playerTurn():
             continue
         if combatAction in equip_List:
             equip()
+            enemyShoot()
             continue
         elif combatAction in shoot_List:
             if Weapon > 0:
@@ -92,19 +108,25 @@ def playerTurn():
                 continue
         elif combatAction in aim_List:
             aim()
+            continue
         elif combatAction in reload_List:
             reload()
+            enemyMove()
+            continue
         elif combatAction in go_List:
             go()
             enemyShoot()
+            continue
+        elif combatAction in heal_List:
+            heal()
+            enemyMove()
+            continue
+        elif combatAction in check_List:
+            check()
+            continue
         elif combatAction in help_List:
             help()
             continue
-        if Troops <= 0 :
-            print("All Soldiers are dead, Mission Failure")
-        elif EnemyTroops <= 0:
-            print("Enemies Neutralized")
-            break
 
 
 def equip():
@@ -146,75 +168,74 @@ def help():
     print("TYPE 'Shoot or s' TO FIRE YOUR WEAPON")
     print("TYPE 'Aim' or a' TO SEE YOUR CHANCE OF HITTING A ENEMY")
     print("TYPE 'Heal' or 'm' TO HEAL A WOUNDED TEAMMATE")
-    print("TYPE 'Cover' or 'c' TO GET BEHIND COVER")
+    print("TYPE 'Check' or 'c' TO SEE STATUS")
     print("TYPE 'Go' or 'g' TO MOVE LOCATION")
-    print("TYPE 'Help' or 'h' IF YOU FORGET THE COMMANDS YOU CAN TYPE")
+    print("TYPE 'Help' or '?' IF YOU FORGET THE COMMANDS YOU CAN TYPE")
 
 
 def accuracyPercentChange():
     global Accuracy
-    global EnemyDistance
+    global enemyDistance
     global Weapon
     global Class
     # Gunner and Medic Accuracy
     # Machine gun
-    if EnemyDistance == 0 and Weapon == 1 and Class != "Ranger":
+    if enemyDistance == 0 and Weapon == 1 and Class != "Ranger":
         Accuracy = 2
-    elif EnemyDistance == 1 and Weapon == 1 and Class != "Ranger":
+    elif enemyDistance == 1 and Weapon == 1 and Class != "Ranger":
         Accuracy = 2
-    elif EnemyDistance == 2 and Weapon == 1 and Class != "Ranger":
+    elif enemyDistance == 2 and Weapon == 1 and Class != "Ranger":
         Accuracy = 1
     # Shotgun
-    elif EnemyDistance == 0 and Weapon == 2 and Class != "Ranger":
+    elif enemyDistance == 0 and Weapon == 2 and Class != "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 1 and Weapon == 2 and Class != "Ranger":
+    elif enemyDistance == 1 and Weapon == 2 and Class != "Ranger":
         Accuracy = 1
-    elif EnemyDistance == 2 and Weapon == 2 and Class != "Ranger":
+    elif enemyDistance == 2 and Weapon == 2 and Class != "Ranger":
         Accuracy = 0
     # Pistol
-    elif EnemyDistance == 0 and Weapon == 3 and Class != "Ranger":
+    elif enemyDistance == 0 and Weapon == 3 and Class != "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 1 and Weapon == 3 and Class != "Ranger":
+    elif enemyDistance == 1 and Weapon == 3 and Class != "Ranger":
         Accuracy = 2
-    elif EnemyDistance == 2 and Weapon == 3 and Class != "Ranger":
+    elif enemyDistance == 2 and Weapon == 3 and Class != "Ranger":
         Accuracy = 1
     # Sniper Rifle
-    elif EnemyDistance == 0 and Weapon == 4 and Class != "Ranger":
+    elif enemyDistance == 0 and Weapon == 4 and Class != "Ranger":
         Accuracy = 0
-    elif EnemyDistance == 1 and Weapon == 4 and Class != "Ranger":
+    elif enemyDistance == 1 and Weapon == 4 and Class != "Ranger":
         Accuracy = 2
-    elif EnemyDistance == 2 and Weapon == 4 and Class != "Ranger":
+    elif enemyDistance == 2 and Weapon == 4 and Class != "Ranger":
         Accuracy = 3
     # Ranger Accuracy
     # Machine gun
-    elif EnemyDistance == 0 and Weapon == 1 and Class == "Ranger":
+    elif enemyDistance == 0 and Weapon == 1 and Class == "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 1 and Weapon == 1 and Class == "Ranger":
+    elif enemyDistance == 1 and Weapon == 1 and Class == "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 2 and Weapon == 1 and Class == "Ranger":
+    elif enemyDistance == 2 and Weapon == 1 and Class == "Ranger":
         Accuracy = 2
     # Shotgun
-    elif EnemyDistance == 0 and Weapon == 2 and Class == "Ranger":
+    elif enemyDistance == 0 and Weapon == 2 and Class == "Ranger":
         Accuracy = 4
-    elif EnemyDistance == 1 and Weapon == 2 and Class == "Ranger":
+    elif enemyDistance == 1 and Weapon == 2 and Class == "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 2 and Weapon == 2 and Class == "Ranger":
+    elif enemyDistance == 2 and Weapon == 2 and Class == "Ranger":
         Accuracy = 0
     # Pistol
-    elif EnemyDistance == 0 and Weapon == 3 and Class == "Ranger":
+    elif enemyDistance == 0 and Weapon == 3 and Class == "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 1 and Weapon == 3 and Class == "Ranger":
+    elif enemyDistance == 1 and Weapon == 3 and Class == "Ranger":
         Accuracy = 2
-    elif EnemyDistance == 2 and Weapon == 3 and Class == "Ranger":
+    elif enemyDistance == 2 and Weapon == 3 and Class == "Ranger":
         Accuracy = 1
     # Sniper Rifle
-    elif EnemyDistance == 0 and Weapon == 4 and Class == "Ranger":
+    elif enemyDistance == 0 and Weapon == 4 and Class == "Ranger":
         Accuracy = 0
-    elif EnemyDistance == 1 and Weapon == 4 and Class == "Ranger":
+    elif enemyDistance == 1 and Weapon == 4 and Class == "Ranger":
         Accuracy = 3
-    elif EnemyDistance == 2 and Weapon == 4 and Class == "Ranger":
+    elif enemyDistance == 2 and Weapon == 4 and Class == "Ranger":
         Accuracy = 4
-    print("Enemy postion is ", distance_List[EnemyDistance])
 
 
 def ammoCheck():
@@ -232,14 +253,24 @@ def ammoCheck():
 def aim():
     global Accuracy
     global accuracy_List
-    print("Your chance of hitting is ",accuracy_List[Accuracy])
+    print("Your chance of hitting is ", accuracy_List[Accuracy])
+
+
+def check():
+    global Troops
+    global enemyTroops
+    global enemyDistance
+    print("Ammo: ", ammo_Dict)
+    print("Troops left: ", Troops)
+    print("Wounded Troops: ", troops_Dict['TroopsWounded'])
+    print("Dead Troops: ", troops_Dict['TroopsDead'])
+    print("Enemies left: ", EnemyTroops)
+    print("Enemy postion is ", distance_List[enemyDistance])
 
 
 def shoot():
     global Accuracy
-    global EnemyWounded
-    global EnemyKilled
-    global EnemyTroops
+    global enemyTroops
     global Weapon
     Hit = (random.randrange(0,5,1)/4) # Generates a random chance between 0 to 1
     accuracyPercentChange()
@@ -252,13 +283,13 @@ def shoot():
         if Hit == 0:
             print("Missed")
         elif 0 < Hit < 1:
-            print("You Wounded a Enemy")
             enemy_Dict['EnemyWounded'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Wounded a Enemy. ", enemyTroops, " Hostile(s) left")
         elif Hit >= 1:
-            print("You Killed a Enemy")
             enemy_Dict['EnemyKilled'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Killed a Enemy.", enemyTroops, " Hostile(s) left")
         ammoCheck() # Shows how many rounds are left
     # Shotgun
     elif Weapon == 2 and ammo_Dict['Shotgun'] > 0:
@@ -267,13 +298,13 @@ def shoot():
         if Hit == 0:
             print("Missed")
         elif 0 < Hit < 1:
-            print("You Wounded a Enemy")
             enemy_Dict['EnemyWounded'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Wounded a Enemy.", enemyTroops, " Hostile(s) left")
         elif Hit >= 1:
-            print("You Killed a Enemy")
             enemy_Dict['EnemyKilled'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Killed a Enemy.", enemyTroops, " Hostile(s) left")
         ammoCheck()
     # Pistol
     elif Weapon == 3 and ammo_Dict['Pistol'] > 0:
@@ -282,13 +313,13 @@ def shoot():
         if Hit == 0:
             print("Missed")
         elif 0 < Hit < 1:
-            print("You Wounded a Enemy")
             enemy_Dict['EnemyWounded'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Wounded a Enemy.", enemyTroops, " Hostile(s) left")
         elif Hit >= 1:
-            print("You Killed a Enemy")
             enemy_Dict['EnemyKilled'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Killed a Enemy.", enemyTroops, " Hostile(s) left")
         ammoCheck()
     # Sniper Rifle
     elif Weapon == 4 and ammo_Dict['SniperRifle'] > 0:
@@ -297,44 +328,65 @@ def shoot():
         if Hit == 0:
             print("Missed")
         elif 0 < Hit < 1:
-            print("You Wounded a Enemy")
             enemy_Dict['EnemyWounded'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Wounded a Enemy.", enemyTroops, " Hostile(s) left")
         elif Hit >= 1:
-            print("You Killed a Enemy")
             enemy_Dict['EnemyKilled'] += 1
-            EnemyTroops -= 1
+            enemyTroops -= 1
+            print("You Killed a Enemy.", enemyTroops, " Hostile(s) left")
         ammoCheck()
     else:
         print("Weapon has no rounds")
 
+
+def heal():
+    global Troops
+    heal = 0
+    if Class == "Medic" and troops_Dict['TroopsWounded'] > 0:
+        print("You try to heal your teammate")
+        print("Healing successful")
+        troops_Dict['TroopsWounded'] += 1
+        Troops += 1
+    elif Class != "Medic" and troops_Dict['TroopsWounded'] > 0:
+        heal = random.randrange(1, 4, 1)
+        print("You try to heal your teammate")
+        if heal == 3:
+            print("Healing successful")
+            troops_Dict['TroopsWounded'] += 1
+            Troops += 1
+        else:
+            print("Healing unsuccessful")
+    else:
+        print("No one needs healing")
+
+
 def go():
-    global EnemyDistance
-    goChoice = 0
+    global enemyDistance
+    go = 0
     print("Where would you like to move to")
     while Game:
         print("1.Forward, 2.Backward, 3.Stay here")
         try:
-            goChoice = int(input(""))
+            go = int(input(""))
         except ValueError:
             continue
-        if goChoice == 1 and EnemyDistance > 0:
+        if go == 1 and enemyDistance > 0:
             EnemyDistance -= 1
             break
-        elif goChoice == 1 and EnemyDistance >= 2:
+        elif go == 1 and enemyDistance == 0 :
             print("CANT GO ANY CLOSER!")
             break
-        elif goChoice == 2 and EnemyDistance < 2:
+        elif go == 2 and enemyDistance < 2:
             EnemyDistance += 1
             break
-        elif goChoice == 2 and EnemyDistance == 2:
+        elif go == 2 and enemyDistance == 2:
             print("CANT GO ANY FURTHER")
             break
-        elif goChoice == 3:
+        elif go == 3:
             break
         else:
             continue
-
 
 
 def reload():
@@ -369,43 +421,56 @@ def reload():
 
 def enemyShoot():
     global Troops
-    global TroopsDead
-    global TroopsWounded
-    Hit = (random.randrange(0,5,1)/4)
-    print("Enemies fires the squad")
-    if EnemyDistance == 0:
-        if Hit == 0:
-            print("Enemy Misses")
-        elif 0 < Hit < 1:
-            print("Soldier is Wounded")
-            troops_Dict['TroopsWounded'] += 1
-            Troops -= 1
-        elif Hit <= 1:
-            print("Soldier is killed ")
-            Troops -= 1
-            troops_Dict['TroopsDead'] += 1
-    elif EnemyDistance == 1:
-        if 0 <= Hit < 0.5:
-            print("Enemy Misses")
-        elif 0.5 <= Hit < 1:
-            print("Soldier is Wounded")
-            troops_Dict['TroopsWounded'] += 1
-            Troops -= 1
-        elif Hit <= 1:
-            print("Soldier is killed ")
-            Troops -= 1
-            troops_Dict['TroopsDead'] += 1
-    elif EnemyDistance == 2:
-        if 0 <= Hit < 0.75:
-            print("Enemy Misses")
-        elif 0.75 <= Hit < 1:
-            print("Soldier is Wounded")
-            troops_Dict['TroopsWounded'] += 1
-            Troops -= 1
-        elif Hit <= 1:
-            print("Soldier is killed ")
-            Troops -= 1
-            troops_Dict['TroopsDead'] += 1
+    global enemyTroops
+    Hit = (random.randrange(0, 5, 1)/4)
+    print("Enemies fires at the squad")
+    if enemyTroops > 0:
+        if enemyDistance == 0:
+            if Hit == 0:
+                print("Enemy Misses")
+            elif 0 < Hit < 1:
+                troops_Dict['TroopsWounded'] += 1
+                Troops -= 1
+                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+            elif Hit <= 1:
+                Troops -= 1
+                troops_Dict['TroopsDead'] += 1
+                print("Soldier is killed. ", Troops, " Troops left on the field.")
+        elif enemyDistance == 1:
+            if 0 <= Hit < 0.5:
+                print("Enemy Misses")
+            elif 0.5 <= Hit < 1:
+                troops_Dict['TroopsWounded'] += 1
+                Troops -= 1
+                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+            elif Hit <= 1:
+                Troops -= 1
+                troops_Dict['TroopsDead'] += 1
+                print("Soldier is killed. ", Troops, " Troops left on the field.")
+        elif enemyDistance == 2:
+            if 0 <= Hit < 0.75:
+                print("Enemy Misses")
+            elif 0.75 <= Hit < 1:
+                troops_Dict['TroopsWounded'] += 1
+                Troops -= 1
+                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+            elif Hit <= 1:
+                Troops -= 1
+                troops_Dict['TroopsDead'] += 1
+                print("Soldier is killed. ", Troops, " Troops left on the field.")
+
+
+def enemyMove():
+    global enemyDistance
+    move = random.randrange(1, 4, 1)
+    if enemyDistance > 0 and move == 1:
+        enemyDistance -= 1
+        print("Enemy advances forward down the field")
+    elif enemyDistance < 2 and move == 2:
+        enemyDistance += 1
+        print("Enemy retreats backward down the field ")
+    else:
+        print("Enemy holds position")
 
 
 
