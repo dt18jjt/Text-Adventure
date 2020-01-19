@@ -1,4 +1,5 @@
 import random
+import sys
 Game = True
 battlePass = False
 combatAction = ""
@@ -10,7 +11,7 @@ enemyName = ""  # string varible for title of the enemies
 Accuracy = 0
 enemyDistance = 1
 turnCounter = 0
-Troops = 20
+Troops = 30
 enemyTroops = 0
 shoot_List = ['Shoot', 'shoot', 'shot', 'fire', 'SHOOT', 'S', 's']
 equip_List = ['Equip', 'equip', 'EQUIP', 'E', 'e']
@@ -70,63 +71,84 @@ def playerTurn():
     global enemyTroops
     global Troops
     global enemyName
-    enemyTroops = random.randrange(1,5,1)
+    global battlePass
+    enemyTroops = random.randrange(8,14,1)
     troops_Dict['TroopsWounded'] = 0
     troops_Dict['TroopsDead'] = 0
-    print("Team Bravo has encountered the ",enemyName)
+    print("Team Bravo has encountered a", enemyName, "squad")
     while Troops > 0 or enemyTroops > 0:
-        if Troops > 30:
-            Troops = 30
         if Troops <= 0 :
             print("All Soldiers are dead, Mission Failure")
-            break
+            sys.exit(0)
         elif enemyTroops == 0:
             battlePass = True
             Troops += troops_Dict['TroopsWounded']
             print(enemyName," Neutralized")
+            print(troops_Dict['TroopsDead'], "Troops lost")
             print("All wounded troops are healed")
             break
-        accuracyPercentChange()
+        accuracyPercentChange() # Check the class, weapon and distance for accuracy
         print("What will you do?")
-        print(combatAction_List)
+        print(combatAction_List) # shows a list of combat commands
         try:
-            combatAction = input("")
+            combatAction = input("") # input for a combat action
         except ValueError:
             continue
         if combatAction in equip_List:
-            equip()
-            enemyShoot()
+            equip() # Goes to equip function
+            enemyShoot() # enemy shoots at team
             continue
         elif combatAction in shoot_List:
             if Weapon > 0:
-                shoot()
+                shoot() # shoots at enemy
                 enemyShoot()
+                enemyMove() # enemy distance variable changes
                 continue
             else:
                 print("You don't have a weapon equipped!")
                 enemyShoot()
                 continue
         elif combatAction in aim_List:
-            aim()
+            aim() # shows aim percentage
             continue
         elif combatAction in reload_List:
-            reload()
-            enemyMove()
+            reload() # resets ammo
+            enemyShoot()
             continue
         elif combatAction in go_List:
-            go()
+            go() # enemy distance variable changes
             enemyShoot()
             continue
         elif combatAction in heal_List:
-            heal()
+            heal() # goes to heal function
             enemyMove()
             continue
         elif combatAction in check_List:
-            check()
+            check() # displays battle infomation
             continue
         elif combatAction in help_List:
-            help()
+            help() # show explinations for commands
             continue
+
+
+def outroCombat():
+    global turnCounter
+    global combatAction
+    turnCounter = 0
+    while turnCounter < 10:
+        print("Shoot(s)")
+        try:
+            combatAction = input("")
+        except ValueError:
+            continue
+        if combatAction in shoot_List:
+            print("You fire your weapon blindly")
+            print("Missed")
+            print("Enemy guns down a soldier")
+            turnCounter += 1
+            continue
+        elif turnCounter == 0:
+            break
 
 
 def equip():
@@ -136,7 +158,7 @@ def equip():
         print(WepEquip_List)
         print("Type the number.")
         try:
-            weaponchoice = int(input(""))
+            weaponchoice = int(input("")) # Changes the value of weapon
         except ValueError:
             continue
         if weaponchoice == 1:
@@ -242,18 +264,23 @@ def ammoCheck():
     global Weapon
     if Weapon == 1:
         print(ammo_Dict['MachineGun'], " Machine gun rounds left")
+    # Machine Gun rounds
     elif Weapon == 2:
         print(ammo_Dict['Shotgun'], " Shotgun rounds left")
+    # Shotgun rounds
     elif Weapon == 3:
         print(ammo_Dict['Pistol'], " Pistol rounds left")
+    # Pistol rounds
     elif Weapon == 4:
         print(ammo_Dict['SniperRifle'], " Sniper Rifle rounds left")
+    # Sniper rounds
 
 
 def aim():
     global Accuracy
     global accuracy_List
     print("Your chance of hitting is ", accuracy_List[Accuracy])
+    # Shows accuracy percentage chance from list
 
 
 def check():
@@ -261,18 +288,19 @@ def check():
     global enemyTroops
     global enemyDistance
     print("Ammo: ", ammo_Dict)
-    print("Troops left: ", Troops)
+    print("Troop(s) left: ", Troops)
     print("Wounded Troops: ", troops_Dict['TroopsWounded'])
     print("Dead Troops: ", troops_Dict['TroopsDead'])
-    print("Enemies left: ", EnemyTroops)
+    print("Enemies left: ", enemyTroops)
     print("Enemy postion is ", distance_List[enemyDistance])
+    # Displays battle info: Ammo, Troops, Enemies
 
 
 def shoot():
     global Accuracy
     global enemyTroops
     global Weapon
-    Hit = (random.randrange(0,5,1)/4) # Generates a random chance between 0 to 1
+    Hit = (random.randrange(1,5,1)/4) # Generates a random chance between 0 to 1
     accuracyPercentChange()
     print("You fire your ", weapon_List[Weapon - 1])
     # Which weapon equipped takes ammo type away
@@ -280,9 +308,9 @@ def shoot():
     if Weapon == 1 and ammo_Dict['MachineGun'] > 0:
         ammo_Dict['MachineGun'] -= 1 # Ammo of weapon subtracted
         Hit = Hit * Accuracy # the hit chance times by the accuracy
-        if Hit == 0:
+        if Hit <= 0.25:
             print("Missed")
-        elif 0 < Hit < 1:
+        elif 0.25 < Hit < 1:
             enemy_Dict['EnemyWounded'] += 1
             enemyTroops -= 1
             print("You Wounded a Enemy. ", enemyTroops, " Hostile(s) left")
@@ -295,9 +323,9 @@ def shoot():
     elif Weapon == 2 and ammo_Dict['Shotgun'] > 0:
         ammo_Dict['Shotgun'] -= 1
         Hit = Hit * Accuracy
-        if Hit == 0:
+        if Hit <= 0.25:
             print("Missed")
-        elif 0 < Hit < 1:
+        elif 0.25 < Hit < 1:
             enemy_Dict['EnemyWounded'] += 1
             enemyTroops -= 1
             print("You Wounded a Enemy.", enemyTroops, " Hostile(s) left")
@@ -310,7 +338,7 @@ def shoot():
     elif Weapon == 3 and ammo_Dict['Pistol'] > 0:
         ammo_Dict['Pistol'] -= 1
         Hit = Hit * Accuracy
-        if Hit == 0:
+        if Hit <= 0.25:
             print("Missed")
         elif 0 < Hit < 1:
             enemy_Dict['EnemyWounded'] += 1
@@ -325,7 +353,7 @@ def shoot():
     elif Weapon == 4 and ammo_Dict['SniperRifle'] > 0:
         ammo_Dict['SniperRifle'] -= 1
         Hit = Hit * Accuracy
-        if Hit == 0:
+        if Hit <= 0.25:
             print("Missed")
         elif 0 < Hit < 1:
             enemy_Dict['EnemyWounded'] += 1
@@ -348,6 +376,7 @@ def heal():
         print("Healing successful")
         troops_Dict['TroopsWounded'] += 1
         Troops += 1
+        # When Class is medic healing chance is 100%
     elif Class != "Medic" and troops_Dict['TroopsWounded'] > 0:
         heal = random.randrange(1, 4, 1)
         print("You try to heal your teammate")
@@ -357,8 +386,10 @@ def heal():
             Troops += 1
         else:
             print("Healing unsuccessful")
+        # Healing is a random chance
     else:
         print("No one needs healing")
+        # When no soldiers are wounded
 
 
 def go():
@@ -372,17 +403,21 @@ def go():
         except ValueError:
             continue
         if go == 1 and enemyDistance > 0:
-            EnemyDistance -= 1
+            enemyDistance -= 1
             break
+            # Moves closer to the enemy
         elif go == 1 and enemyDistance == 0 :
             print("CANT GO ANY CLOSER!")
             break
+            # When the player can't move any closer to enemy
         elif go == 2 and enemyDistance < 2:
-            EnemyDistance += 1
+            enemyDistance += 1
             break
+            # Moves further from the enemy
         elif go == 2 and enemyDistance == 2:
             print("CANT GO ANY FURTHER")
             break
+            # When the player can't move any further away from enemy
         elif go == 3:
             break
         else:
@@ -422,8 +457,9 @@ def reload():
 def enemyShoot():
     global Troops
     global enemyTroops
-    Hit = (random.randrange(0, 5, 1)/4)
+    Hit = (random.randrange(0, 5, 1)/4) # Hit chance is random
     print("Enemies fires at the squad")
+    # Enemy accuracy is affected by distance
     if enemyTroops > 0:
         if enemyDistance == 0:
             if Hit == 0:
@@ -431,46 +467,51 @@ def enemyShoot():
             elif 0 < Hit < 1:
                 troops_Dict['TroopsWounded'] += 1
                 Troops -= 1
-                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+                print("Soldier is Wounded. ", Troops, " Troop(s) left on the field.")
             elif Hit <= 1:
                 Troops -= 1
                 troops_Dict['TroopsDead'] += 1
-                print("Soldier is killed. ", Troops, " Troops left on the field.")
+                print("Soldier is killed. ", Troops, " Troop(s) left on the field.")
         elif enemyDistance == 1:
             if 0 <= Hit < 0.5:
                 print("Enemy Misses")
             elif 0.5 <= Hit < 1:
                 troops_Dict['TroopsWounded'] += 1
                 Troops -= 1
-                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+                print("Soldier is Wounded. ", Troops, " Troop(s) left on the field.")
             elif Hit <= 1:
                 Troops -= 1
                 troops_Dict['TroopsDead'] += 1
-                print("Soldier is killed. ", Troops, " Troops left on the field.")
+                print("Soldier is killed. ", Troops, " Troop(s) left on the field.")
         elif enemyDistance == 2:
             if 0 <= Hit < 0.75:
                 print("Enemy Misses")
             elif 0.75 <= Hit < 1:
                 troops_Dict['TroopsWounded'] += 1
                 Troops -= 1
-                print("Soldier is Wounded. ", Troops, " Troops left on the field.")
+                print("Soldier is Wounded. ", Troops, " Troop(s) left on the field.")
             elif Hit <= 1:
                 Troops -= 1
                 troops_Dict['TroopsDead'] += 1
-                print("Soldier is killed. ", Troops, " Troops left on the field.")
+                print("Soldier is killed. ", Troops, " Troop(s) left on the field.")
 
 
 def enemyMove():
     global enemyDistance
-    move = random.randrange(1, 4, 1)
+    move = random.randrange(1, 4, 1) # Moving a random chance
     if enemyDistance > 0 and move == 1:
         enemyDistance -= 1
         print("Enemy advances forward down the field")
+        # Moves closer to player
     elif enemyDistance < 2 and move == 2:
         enemyDistance += 1
         print("Enemy retreats backward down the field ")
+        # Moves away from  player
     else:
         print("Enemy holds position")
+
+
+
 
 
 
